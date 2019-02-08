@@ -104,10 +104,6 @@ float sdRoundCone(vec3 p, float r1, float r2, float h) {
   return dot(q, vec2(a,b) ) - r1;
 }
 
-float sdPlane(vec3 p, vec4 n) {
-  return dot(p, n.xyz) + n.w;
-}
-
 float sceneSDF(vec3 point) {
   vec3 headTrans = vec3(0.85, -2.0, -1.0);
   float head = sdSphere((point + headTrans), 1.0);
@@ -244,11 +240,11 @@ float rayMarch(vec3 rayDir) {
         // We're inside the scene surface!
         return depth;
     }
-    // Move along the view ray
+    // Move along the ray
     depth += dist;
 
     if (depth >= maxDist) {
-        // Gone too far; give up
+        // Gone too far
         return maxDist;
     }
   }
@@ -271,7 +267,7 @@ vec3 castRay() {
 
 vec4 lambert(vec3 color, vec3 normal) {
   vec4 diffuseColor = vec4(color, 1.0);
-  vec3 lightDir = vec3(0.0, 1.0, -0.7);
+  vec3 lightDir = vec3(1.0, 1.0, -0.7);
   float diffuseTerm = dot(normalize(normal), normalize(lightDir));
   diffuseTerm = clamp(diffuseTerm, 0.0, 1.0);
   float ambientTerm = 0.2;
