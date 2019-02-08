@@ -10,12 +10,13 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
-  tesselations: 5,
-  'Load Scene': loadScene, // A function pointer, essentially
+  Time_Of_Day: 'Day',
+  Dino_Color: [66.0, 240.0, 230.0],
 };
 
 let square: Square;
 let time: number = 0;
+let prevColor = [66.0, 240.0, 230.0];
 
 function loadScene() {
   square = new Square(vec3.fromValues(0, 0, 0));
@@ -47,6 +48,8 @@ function main() {
 
   // Add controls to the gui
   const gui = new DAT.GUI();
+  gui.add(controls, 'Time_Of_Day', ['Day', 'Night']);
+  gui.addColor(controls, 'Dino_Color');
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -83,9 +86,15 @@ function main() {
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     renderer.clear();
     processKeyPresses();
+
+    if (controls.Dino_Color != prevColor) 
+    {
+      prevColor = controls.Dino_Color;
+    }
+
     renderer.render(camera, flat, [
       square,
-    ], time);
+    ], time, controls.Time_Of_Day, prevColor[0] / 255.0, prevColor[1] / 255.0, prevColor[2] / 255.0);
     time++;
     stats.end();
 
